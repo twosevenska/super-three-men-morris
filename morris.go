@@ -6,70 +6,105 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"super-three-men-morris/board"
 )
 
+const rules = `
+* Each player has 3 pieces, one set white and the other black
+* The board is a 3x3 grid with 9 spaces
+* Players take turns placing their pieces on empty intersections, starting with the white one
+* Once all pieces are placed, player need to move one of their pieces per turn
+* A piece may move to any vacant point on the same row/column/diagonal, not just an adjacent one
+* To win a player must align their pieces on a line
+`
+
 const (
-	empty = 0
-	white = 1
-	black = 2
+	zero = 0
+	add  = "add"
+	move = "move"
 )
 
 func main() {
-	fmt.Println("Welcome to the cousin of Tic-Tac-Toe - Kata! Have fun!")
-	board := [3][3]int{}
+	fmt.Println("Welcome to the SUPER Three men morris! Have fun!")
+	fmt.Println(rules)
 
-	player := white
+	game := board.Init()
+	player := board.White
+	piecesLeft := 3
+	action := add
+
 	scanner := bufio.NewScanner(os.Stdin)
-	printBoard(board)
-	for scanner.Scan() {
-		input := scanner.Text()
-		move := strings.Split(input, ",")
-		x, _ := strconv.Atoi(move[0])
-		y, _ := strconv.Atoi(move[1])
-		board = addPiece(board, x, y, player)
-
-		if player == white {
-			player = black
-		} else {
-			player = white
+	for {
+		if piecesLeft == zero {
+			action = move
 		}
-		printBoard(board)
+
+		fmt.Println(game)
+		fmt.Printf("Player %s %s: ", player, action)
+
+		scanner.Scan()
+		input := scanner.Text()
+		retry := playGame(game, player, action, input)
+		if retry {
+			continue
+		}
+
+		if player == board.White {
+			player = board.Black
+		} else {
+			player = board.White
+			piecesLeft = piecesLeft - 1
+		}
+		fmt.Print("\n")
 	}
-
 }
 
-func addPiece(board [3][3]int, x, y, player int) [3][3]int {
-	board[x][y] = player
-	return board
-}
+func playGame(game *board.Board, player, action, input string) bool {
+	op := strings.Split(input, " ")
+	if action == add {
+		if len(op) < 1 {
+			fmt.Println("\nNo coordinates received")
+			return true
+		}
 
-//   1 2 3
-// 1 ●
-// 2   ○
-// 3     ●
-func printBoard(b [3][3]int) {
-	fmt.Println("   0 1 2")
-	fmt.Printf(" 0 %s %s %s\n", fp(b[0][0]), fp(b[0][1]), fp(b[0][2]))
-	fmt.Printf(" 1 %s %s %s\n", fp(b[1][0]), fp(b[1][1]), fp(b[1][2]))
-	fmt.Printf(" 2 %s %s %s\n", fp(b[2][0]), fp(b[2][1]), fp(b[2][2]))
-}
+		x, y, err := extractCoor(op[0])
+		if err != nil {
+			fmt.Println(err.Error())
+			return true
+		}
 
-func fp(i int) string {
-	if i == white {
-		return "●"
-	}
-
-	if i == black {
-		return "○"
-	}
-
-	return " "
-}
-
-// valPos TODO: explain all val
-func valPos(b [3][3]int, x, y int) bool {
-	if b[x][y] == empty {
-		return true
+		err = game.AddPiece(x, y, player)
+		if err != nil {
+			fmt.Printf("Failed to add piece: %s", err.Error())
+			return true
+		}
+	} else {
+		//TODO: Implement move action
+		fmt.Printf("OPS! Sorry but this is an unfinished program. Exiting...")
+		os.Exit(0)
 	}
 	return false
+}
+
+func extractCoor(str string) (int, int, error) {
+	move := strings.Split(str, ",")
+	x, err := strconv.Atoi(move[0])
+	if err != nil {
+		return 0, 0, fmt.Errorf("\nX coordinate invalid: %s\n", err.Error())
+	}
+	y, err := strconv.Atoi(move[1])
+	if err != nil {
+		return 0, 0, fmt.Errorf("\nY coordinate invalid: %s\n", err.Error())
+	}
+
+	if x < 0 || x > 3 {
+		return 0, 0, fmt.Errorf("\nX coordinate invalid: %d out of bounds\n", x)
+	}
+
+	if y < 0 || y > 3 {
+		return 0, 0, fmt.Errorf("\nY coordinate invalid: %d out of bounds\n", y)
+	}
+
+	return x, y, nil
 }
