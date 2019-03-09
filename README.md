@@ -12,3 +12,8 @@ Quick terminal based variant of the "Three men's morris" game.
 * Once all pieces are placed, player need to move one of their pieces per turn
 * A piece may move to any vacant point on the same row/column/diagonal, not just an adjacent one
 * To win a player must align their pieces on a line
+
+## TODO
+
+* Implement move action
+* Implement win check

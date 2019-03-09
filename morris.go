@@ -84,6 +84,7 @@ func playGame(game *board.Board, player, action, input string) bool {
 		fmt.Printf("OPS! Sorry but this is an unfinished program. Exiting...")
 		os.Exit(0)
 	}
+	//TODO: Implement win check
 	return false
 }
 
