@@ -2,7 +2,7 @@
 
 ![morris-banner.jpg](/morris-banner.jpg)
 
-Quick terminal based variant of the "Three men's morris" game.
+Quick/Crude terminal based variant of the "Three men's morris" game.
 
 ## Rules
 
@@ -16,4 +16,3 @@ Quick terminal based variant of the "Three men's morris" game.
 ## TODO
 
 * Implement move action
-* Implement win check

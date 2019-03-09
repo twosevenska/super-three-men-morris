@@ -19,6 +19,22 @@ const rules = `
 * To win a player must align their pieces on a line
 `
 
+const winTrophy = `
+             ___________
+            '._==_==_=_.'
+            .-\:      /-.
+           | (|:.     |) |
+            '-|:.     |-'
+              \::.    /
+               '::. .'
+                 ) (
+               _.' '._
+			  '"""""""'
+=====================================
+           Player %s wins!
+=====================================
+`
+
 const (
 	zero = 0
 	add  = "add"
@@ -84,7 +100,10 @@ func playGame(game *board.Board, player, action, input string) bool {
 		fmt.Printf("OPS! Sorry but this is an unfinished program. Exiting...")
 		os.Exit(0)
 	}
-	//TODO: Implement win check
+	if game.CheckVictory() {
+		fmt.Printf(winTrophy, player)
+		os.Exit(0)
+	}
 	return false
 }
 
