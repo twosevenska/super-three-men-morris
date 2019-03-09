@@ -91,19 +91,19 @@ func extractCoor(str string) (int, int, error) {
 	move := strings.Split(str, ",")
 	x, err := strconv.Atoi(move[0])
 	if err != nil {
-		return 0, 0, fmt.Errorf("\nX coordinate invalid: %s\n", err.Error())
+		return 0, 0, fmt.Errorf("\nX coordinate in \"%s\" is invalid", move[0])
 	}
 	y, err := strconv.Atoi(move[1])
 	if err != nil {
-		return 0, 0, fmt.Errorf("\nY coordinate invalid: %s\n", err.Error())
+		return 0, 0, fmt.Errorf("\nY coordinate in \"%s\" is invalid", move[1])
 	}
 
 	if x < 0 || x > 3 {
-		return 0, 0, fmt.Errorf("\nX coordinate invalid: %d out of bounds\n", x)
+		return 0, 0, fmt.Errorf("\nX coordinate invalid: %d out of bounds", x)
 	}
 
 	if y < 0 || y > 3 {
-		return 0, 0, fmt.Errorf("\nY coordinate invalid: %d out of bounds\n", y)
+		return 0, 0, fmt.Errorf("\nY coordinate invalid: %d out of bounds", y)
 	}
 
 	return x, y, nil
