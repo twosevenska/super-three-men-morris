@@ -10,7 +10,7 @@ bin: clean
 	@echo "Build project binaries..."
 	GOOS=linux GOARCH=386 go build -v -o $(BUILD_CONTEXT)/tmm_linux_386
 	GOOS=darwin GOARCH=386 go build -v -o $(BUILD_CONTEXT)/tmm_darwin_386
-	GOOS=linux GOARCH=386 go build -v -o $(BUILD_CONTEXT)/windows_linux_386
+	GOOS=linux GOARCH=386 go build -v -o $(BUILD_CONTEXT)/tmm_windows_386
 
 .PHONY: clean
 clean:
