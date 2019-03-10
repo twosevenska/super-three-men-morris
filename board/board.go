@@ -33,6 +33,53 @@ func (b *Board) AddPiece(x, y int, p string) error {
 	return nil
 }
 
+//MovePiece...
+func (b *Board) MovePiece(ox, oy, tx, ty int, p string) error {
+	if b[ox][oy] != p {
+		return fmt.Errorf("(%d,%d) is either empty or does not belong to you.", ox, oy)
+	}
+
+	isInvalid := invalidMove(ox, oy, tx, ty)
+	if isInvalid {
+		return fmt.Errorf("Cannot move to target coordinates (%d,%d): move in either a line or diagonally", tx, ty)
+	}
+
+	err := b.AddPiece(tx, ty, p)
+	if err != nil {
+		return err
+	}
+
+	b[ox][oy] = Empty
+	rotatedBoard[oy][ox] = Empty
+	return nil
+}
+
+//invalidMove tries to figure if a piece tries an invalid "chess piece horse pattern" move
+func invalidMove(ox, oy, tx, ty int) bool {
+
+	//   0 1 2        0 1 2         0 1 2
+	// 0 ● - |      0     x       0 x
+	// 1     x  or  1 ● - |   or  1 | - ●
+	// 2            2     x       2 x
+	if tx == ox+2 || tx == ox-2 {
+		if ty == oy+1 || ty == oy-1 {
+			return true
+		}
+	}
+
+	//   0 1 2        0 1 2         0 1 2
+	// 0 - x        0 x - x       0   ●
+	// 1 |      or  1   |     or  1   |
+	// 2 ●          2   ●         2 x - x
+	if ty == oy+2 || ty == oy-2 {
+		if tx == ox+1 || tx == ox-1 {
+			return true
+		}
+	}
+
+	return false
+}
+
 //   0 1 2
 // 0 ●
 // 1   ○
@@ -45,9 +92,9 @@ func (b *Board) String() string {
   2 %s %s %s
   `
 	return fmt.Sprintf(t,
-		b[0][0], b[0][1], b[0][2],
-		b[1][0], b[1][1], b[1][2],
-		b[2][0], b[2][1], b[2][2],
+		b[0][0], b[1][0], b[2][0],
+		b[0][1], b[1][1], b[2][1],
+		b[0][2], b[1][2], b[2][2],
 	)
 }
 

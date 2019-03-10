@@ -29,7 +29,6 @@ const winTrophy = `
                '::. .'
                  ) (
                _.' '._
-			  '"""""""'
 =====================================
            Player %s wins!
 =====================================
@@ -66,6 +65,11 @@ func main() {
 			continue
 		}
 
+		if game.CheckVictory() {
+			fmt.Printf(winTrophy, player)
+			os.Exit(0)
+		}
+
 		if player == board.White {
 			player = board.Black
 		} else {
@@ -96,13 +100,28 @@ func playGame(game *board.Board, player, action, input string) bool {
 			return true
 		}
 	} else {
-		//TODO: Implement move action
-		fmt.Printf("OPS! Sorry but this is an unfinished program. Exiting...")
-		os.Exit(0)
-	}
-	if game.CheckVictory() {
-		fmt.Printf(winTrophy, player)
-		os.Exit(0)
+		if len(op) < 2 {
+			fmt.Println("\nNo enough coordinates received")
+			return true
+		}
+
+		ox, oy, err := extractCoor(op[0])
+		if err != nil {
+			fmt.Println(err.Error())
+			return true
+		}
+
+		tx, ty, err := extractCoor(op[1])
+		if err != nil {
+			fmt.Println(err.Error())
+			return true
+		}
+
+		err = game.MovePiece(ox, oy, tx, ty, player)
+		if err != nil {
+			fmt.Printf("Failed to move piece: %s", err.Error())
+			return true
+		}
 	}
 	return false
 }
